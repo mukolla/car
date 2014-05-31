@@ -19,6 +19,7 @@ return array(
 		'application.components.*',
         'application.extensions.*',
         'application.extensions.yiidebugtb.*',
+        'application.widgets.*',
 	),
 
 	'modules'=>array(
@@ -48,6 +49,7 @@ return array(
 				'<controller:\w+>/<id:\d+>'=>'<controller>/view',
 				'<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/<action>',
 				'<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
+                'admin'=>'admin/admin/index',
                 //'/<controller>/<action>/admin'=>'admin/<controller>/<action>',
 			),
 		),

@@ -13,8 +13,8 @@
 
 
 <li class="category">
-    <?php echo CHtml::link(CHtml::image($data->getImage(120,120)),array('/search/filter','category_id'=>$data->id)); ?>
-    <?php echo CHtml::link($data->name,array('/search/filter','category_id'=>$data->id)); ?>
+    <?php echo CHtml::link(CHtml::image($data->getImage(120,120)),array('/search/index','id'=>$data->id)); ?>
+    <?php echo CHtml::link($data->name,array('/category/index','id'=>$data->id)); ?>
 
     <div>
         <?php echo CHtml::encode($data->description); ?>

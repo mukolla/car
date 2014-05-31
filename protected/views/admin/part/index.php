@@ -3,16 +3,15 @@
 /* @var $dataProvider CActiveDataProvider */
 
 $this->breadcrumbs=array(
-	'Parts',
+	'Запчасти',
 );
 
 $this->menu=array(
-	array('label'=>'Create Part', 'url'=>array('create')),
-	array('label'=>'Manage Part', 'url'=>array('admin')),
+	array('label'=>'Запчасти', 'url'=>array('admin')),
 );
 ?>
 
-<h1>Parts</h1>
+<h1>Запчасти</h1>
 
 <?php $this->widget('zii.widgets.CListView', array(
 	'dataProvider'=>$dataProvider,

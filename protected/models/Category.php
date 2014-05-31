@@ -144,4 +144,9 @@ class Category extends CActiveRecord
         $image->crop($width, $height, 'center', 'center');
         $image->save($dest);
     }
+
+    public static function getCategoryList()
+    {
+        return self::model()->findAll();
+    }
 }

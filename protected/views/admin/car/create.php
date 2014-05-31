@@ -3,16 +3,16 @@
 /* @var $model Car */
 
 $this->breadcrumbs=array(
-	'Cars'=>array('index'),
-	'Create',
+	'Автомобили'=>array('admin'),
+	'Новый автомобиль',
 );
 
 $this->menu=array(
-	array('label'=>'List Car', 'url'=>array('index')),
-	array('label'=>'Manage Car', 'url'=>array('admin')),
+	//array('label'=>'List Car', 'url'=>array('index')),
+	array('label'=>'Автомобили', 'url'=>array('admin')),
 );
 ?>
 
-<h1>Create Car</h1>
+<h1>Добавить автомобиль</h1>
 
 <?php $this->renderPartial('_form', array('model'=>$model)); ?>

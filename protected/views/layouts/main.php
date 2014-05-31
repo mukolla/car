@@ -30,15 +30,22 @@
 		<?php $this->widget('zii.widgets.CMenu',array(
 			'items'=>array(
 			    array('label'=>'Home', 'url'=>array('/site/index')),
-				array('label'=>'Автомобили', 'url'=>array('/admin/car/admin')),
-				array('label'=>'Запчасти', 'url'=>array('/admin/part/admin')),
-				array('label'=>'Категории', 'url'=>array('/admin/category/admin')),
-				array('label'=>'About', 'url'=>array('/site/page', 'view'=>'about')),
-				array('label'=>'Contact', 'url'=>array('/site/contact')),
+                array('label'=>'Категории', 'url'=>array('/category/index')),
+
+                array('label'=>'О магазине', 'url'=>array('/site/page', 'view'=>'about')),
+                array('label'=>'Контакты', 'url'=>array('/site/contact')),
+
+
+
+                //array('label'=>'Автомобили', 'url'=>array('/admin/car/admin')),
+                //array('label'=>'Запчасти', 'url'=>array('/admin/part/admin')),
 				array('label'=>'Login', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
-				array('label'=>'Logout ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
+				array('label'=>'Logout ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest),
+
+                array('label'=>'Админ', 'url'=>array('/admin')),
 			),
 		)); ?>
+
 	</div><!-- mainmenu -->
 	<?php if(isset($this->breadcrumbs)):?>
 		<?php $this->widget('zii.widgets.CBreadcrumbs', array(

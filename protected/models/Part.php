@@ -62,6 +62,7 @@ class Part extends CActiveRecord
 		return array(
 			'category' => array(self::BELONGS_TO, 'Category', 'category_id'),
 			'partCars' => array(self::HAS_MANY, 'PartCar', 'part_id'),
+
             'cars'=>array(self::MANY_MANY, 'Car',
                 'tbl_part_car(part_id, car_id)'),
 		);
@@ -175,14 +176,23 @@ class Part extends CActiveRecord
         $image->save($dest);
     }
 
-    public static function getPartListByCarId($car_id)
+    public static function getPartListByCarId($car_list)
     {
+        if(is_integer($car_list))
+            $car_list = array($car_list);
+        elseif(!is_array($car_list) || !count($car_list))
+            return array();
+
+        $quey_car_list = array();
+        foreach($car_list as $car)
+            $quey_car_list[] = mysql_real_escape_string($car);
+
         $part_list = Yii::app()->db->createCommand()
             ->select('p.id')
             ->from('{{part}} as p')
             ->leftJoin('{{part_car}} as pc', 'pc.part_id=p.id')
             ->leftJoin('{{car}} as c', 'c.id=pc.car_id')
-            ->where('pc.car_id=:car_id', array(':car_id'=>$car_id))
+            ->where('pc.car_id IN ('.implode(',',$car_list).')')
             ->group('p.id')
             ->queryColumn();
         return $part_list;

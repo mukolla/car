@@ -7,9 +7,23 @@
 </div>
 <div class="span-5 last">
 	<div id="sidebar">
+
+        <?php if($this->id != 'admin/admin') {?>
+            <?php $this->beginWidget('zii.widgets.CPortlet', array(
+                'title'=>'Админ',
+            ));
+            $this->widget('zii.widgets.CMenu', array(
+                'items'=>array(array(
+                    'label' => 'Админ',
+                    'url' => array('/admin'),
+                ),),
+                'htmlOptions'=>array('class'=>'operations'),
+            ));
+            $this->endWidget(); ?>
+        <?php }?>
 	<?php
 		$this->beginWidget('zii.widgets.CPortlet', array(
-			'title'=>'Operations',
+			'title'=>'Управление',
 		));
 		$this->widget('zii.widgets.CMenu', array(
 			'items'=>$this->menu,

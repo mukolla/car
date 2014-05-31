@@ -169,4 +169,9 @@ class Car extends CActiveRecord
         $car_list = Car::model()->findAll($criteria);
         return $car_list;
     }
+
+    public static function getCarList()
+    {
+        return self::model()->findAll();
+    }
 }

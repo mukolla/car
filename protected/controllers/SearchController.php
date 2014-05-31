@@ -13,33 +13,31 @@ class SearchController extends Controller
     //сформировать для этих автомобилей меню
     public function actionFilter()
     {
-
-        $category_id = Yii::app()->getRequest()->getParam('category_id');
-        $car_id = Yii::app()->getRequest()->getParam('car_id');
-
-        $car_list = Car::getModelCarListByCategoryId($category_id,$car_id);
-        $part_list = Part::getPartListByCarId($car_id);
-
-        $menu_list = array();
+        /*$menu_list = array();
         foreach ($car_list as $car) {
             $menu_list[] = array(
                 'label'=>$car->name,
                 'url' => Yii::app()->createUrl('/search/filter',array('category_id'=>$category_id, 'car_id'=>$car->id))
             );
         }
-        $this->menu = $menu_list;
+        $this->menu = $menu_list;*/
 
+        $car_list = Yii::app()->getRequest()->getParam('car_list');
+        $category_list = Yii::app()->getRequest()->getParam('category_list');
 
         $criteria = new CDbCriteria();
-        $criteria->with = array('cars');
-        $criteria->params = array(
-            ':category_id' => $category_id,
-        );
-        $criteria->addCondition('category_id=:category_id');
 
-        if($car_id !== null)
-            $criteria->addInCondition('t.id',$part_list);
-        //$criteria->join = 'LEFT JOIN {{car}} as car ON car.id = cars_cars.car_id ';
+        //условия по автомобилям
+        if($car_list !== null){
+            $criteria->with = array('cars');
+            $criteria->together = true;
+
+            $criteria->addInCondition('cars.id', $car_list);
+        }
+
+        //условия по запчастям
+        if($category_list !== null)
+            $criteria->addInCondition('t.category_id', $category_list);
 
         $partProvider=new CActiveDataProvider('Part',
             array(
@@ -54,7 +52,6 @@ class SearchController extends Controller
         $this->render('index',
             array(
                 'partProvider' => $partProvider,
-                'category' => Category::model()->findByPk($category_id),
             )
         );
     }
