@@ -145,7 +145,7 @@ class Part extends CActiveRecord
                 'attribute'=>'image',
                 'fileAlias'=> $this->_fileAlias,
                 'types'=>'jpg, jpeg, png'
-            )
+            ),
         );
     }
 

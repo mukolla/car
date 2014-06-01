@@ -1,6 +1,6 @@
 <?php
 
-class PartController extends Controller
+class ImportPartController extends Controller
 {
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
@@ -28,11 +28,11 @@ class PartController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view', 'import'),
+				'actions'=>array('index','view'),
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update', 'copy', 'import'),
+				'actions'=>array('create','update'),
 				'users'=>array('@'),
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -62,22 +62,48 @@ class PartController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model=new Part;
+		$model=new ImportPart;
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Part']))
+		if(isset($_POST['ImportPart']))
 		{
-			$model->attributes=$_POST['Part'];
+			$model->attributes=$_POST['ImportPart'];
 			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+            {
+                $this->import($model->file);
+                $this->redirect(array('view','id'=>$model->id));
+            }
 		}
 
 		$this->render('create',array(
 			'model'=>$model,
 		));
 	}
+
+    protected function import($file)
+    {
+        $delim=',';  		// Разделитель полей в CSV файле
+        $enclosed='"';  	// Кавычки для содержимого полей
+        $escaped='\\'; 	 	// Ставится перед специальными символами
+        $lineend='\\n';
+        $dir = YiiBase::getPathOfAlias(ImportPart::FILE_IMPORT_PATH);
+        //$files = CFileHelper::findFiles($dir, array('level'=>0));
+        $files = array( $dir . DIRECTORY_SEPARATOR . $file);
+
+        $ignore = "IGNORE 1 LINES ";
+        ini_set('max_execution_time', 0);
+        foreach ($files as $file) {
+            $q_import =
+                "LOAD DATA INFILE '".
+                $file."' INTO TABLE {{temp_import_part}} ".
+                "FIELDS TERMINATED BY '".$delim."' ENCLOSED BY '".$enclosed."' ".
+                "LINES TERMINATED BY '".$lineend."' ".
+                $ignore;
+            Yii::app()->db->createCommand($q_import)->execute();
+        }
+    }
 
 	/**
 	 * Updates a particular model.
@@ -91,9 +117,9 @@ class PartController extends Controller
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Part']))
+		if(isset($_POST['ImportPart']))
 		{
-			$model->attributes=$_POST['Part'];
+			$model->attributes=$_POST['ImportPart'];
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -117,31 +143,12 @@ class PartController extends Controller
 			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
 	}
 
-    public function actionCopy($id)
-    {
-        $model = $this->loadModel($id);
-
-        unset($model->id);
-
-        $part = new Part();
-        $part->attributes = $model->attributes;
-        $part->car_list = PartCar::model()->loadCar($id);
-
-        $part->name = 'COPY IN '. $part->name;
-
-        if($part->save())
-        {
-            $this->redirect(array('/admin/part/update', 'id'=> $part->id));
-        }
-
-    }
-
 	/**
 	 * Lists all models.
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('Part');
+		$dataProvider=new CActiveDataProvider('ImportPart');
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
 		));
@@ -152,10 +159,10 @@ class PartController extends Controller
 	 */
 	public function actionAdmin()
 	{
-		$model=new Part('search');
+		$model=new ImportPart('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['Part']))
-			$model->attributes=$_GET['Part'];
+		if(isset($_GET['ImportPart']))
+			$model->attributes=$_GET['ImportPart'];
 
 		$this->render('admin',array(
 			'model'=>$model,
@@ -166,12 +173,12 @@ class PartController extends Controller
 	 * Returns the data model based on the primary key given in the GET variable.
 	 * If the data model is not found, an HTTP exception will be raised.
 	 * @param integer $id the ID of the model to be loaded
-	 * @return Part the loaded model
+	 * @return ImportPart the loaded model
 	 * @throws CHttpException
 	 */
 	public function loadModel($id)
 	{
-		$model=Part::model()->findByPk($id);
+		$model=ImportPart::model()->findByPk($id);
 		if($model===null)
 			throw new CHttpException(404,'The requested page does not exist.');
 		return $model;
@@ -179,54 +186,14 @@ class PartController extends Controller
 
 	/**
 	 * Performs the AJAX validation.
-	 * @param Part $model the model to be validated
+	 * @param ImportPart $model the model to be validated
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='part-form')
+		if(isset($_POST['ajax']) && $_POST['ajax']==='import-part-form')
 		{
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}
 	}
-
-    public function actionImport()
-    {
-        $result = array();
-
-        $temp_part_list = Yii::app()->request->getParam('part_list');
-        foreach ($temp_part_list as $part_id) {
-
-            $part = TempImportPart::model()->findByPk($part_id);
-
-            $modelPart = new Part;
-            $modelPart->attributes = $part->attributes;
-
-            //пропускаем запчасти дял которых нет категорий
-            if(!strlen(Category::model()->getCategoryNameById($modelPart->category_id))){
-                $result['not_category']['part_list'][] = $part->id;
-                continue;
-            }
-
-            if($part->car_list !== null){
-                $modelPart->car_list = explode(',',$part->car_list);
-
-                //удалим машини на которых нет. что бы избежать ошибок с внешними ключами.
-                foreach($modelPart->car_list as $key => $car_id){
-                    $carName = Car::model()->getCarNameById($car_id);
-                    if(!strlen($carName)){
-                        unset($modelPart->car_list[$key]);
-                        $result['not_car']['part_list'][] = array('part_id'=> $part->id, 'car_id' => $car_id);
-                    }
-                }
-
-            }
-
-            if($modelPart->save())
-                $result['success_list'][] = $part->id;
-        }
-
-        echo json_encode($result);
-        Yii::app()->end();
-    }
 }

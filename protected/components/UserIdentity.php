@@ -30,4 +30,9 @@ class UserIdentity extends CUserIdentity
 			$this->errorCode=self::ERROR_NONE;
 		return !$this->errorCode;
 	}
+
+    public function getId()
+    {
+        return (int) 1;
+    }
 }

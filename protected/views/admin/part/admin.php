@@ -8,8 +8,9 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>'Запчасти', 'url'=>array('admin')),
 	array('label'=>'Добавить', 'url'=>array('create')),
+    array('label'=>'Ипорт', 'url'=>array('/importPart/create')),
+    array('label'=>'Импортированные', 'url'=>array('admin/tempImportPart/admin')),
 );
 
 Yii::app()->clientScript->registerScript('search', "

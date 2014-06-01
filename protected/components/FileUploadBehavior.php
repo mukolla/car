@@ -21,6 +21,7 @@ class FileUploadBehavior extends CActiveRecordBehavior
             $tempName = uniqid().'.'.$file->getExtensionName();
             $dir = Yii::getPathOfAlias($this->fileAlias).DIRECTORY_SEPARATOR;
             $file->saveAs($dir.$tempName);
+            chmod($dir.$tempName,0777);
             $this->owner->setAttribute($this->attribute, $tempName);
         } else
             $this->owner->setAttribute($this->attribute, $this->_old_file);

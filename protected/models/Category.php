@@ -14,6 +14,8 @@
  */
 class Category extends CActiveRecord
 {
+    public $list; //category_list
+
     protected $_fileAlias = 'webroot.upload.category';
     protected $filePatch = '/upload/category/';
 
@@ -148,5 +150,24 @@ class Category extends CActiveRecord
     public static function getCategoryList()
     {
         return self::model()->findAll();
+    }
+
+    public function getCategoryNameById($category_id)
+    {
+        if($this->list === null){
+            $this->list = self::model()->findAll();
+
+            $result = array();
+            foreach($this->list as $category){
+                $result[$category->id] = $category->name;
+            }
+
+            $this->list = $result;
+        }
+
+        if(isset($this->list[$category_id]))
+            return $this->list[$category_id];
+
+        return '';
     }
 }

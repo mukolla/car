@@ -21,6 +21,14 @@ class AdminController extends Controller
             'label' => 'Автомобили',
             'url' => array('admin/car/admin'),
         ),
+        array(
+            'label'=>'Ипорт запчастей',
+            'url'=>array('/importPart/create')
+        ),
+        array(
+            'label'=>'Импортированые запчасти',
+            'url'=>array('/admin/tempImportPart/admin')
+        ),
     );
 
 

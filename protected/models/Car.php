@@ -18,7 +18,9 @@
  */
 class Car extends CActiveRecord
 {
-	const FUEL_TYPE_ALL = 0;
+	public $list;
+
+    const FUEL_TYPE_ALL = 0;
 	const FUEL_TYPE_BENZINE = 1;
 	const FUEL_TYPE_DIESEL = 2;
 
@@ -173,5 +175,24 @@ class Car extends CActiveRecord
     public static function getCarList()
     {
         return self::model()->findAll();
+    }
+
+    public function getCarNameById($car_id)
+    {
+        if($this->list === null){
+            $this->list = self::model()->findAll();
+
+            $result = array();
+            foreach($this->list as $item){
+                $result[$item->id] = $item->name;
+            }
+
+            $this->list = $result;
+        }
+
+        if(isset($this->list[$car_id]))
+            return $this->list[$car_id];
+
+        return '';
     }
 }
