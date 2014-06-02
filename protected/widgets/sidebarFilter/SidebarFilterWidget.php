@@ -15,6 +15,9 @@ class SidebarFilterWidget extends CWidget {
         $this->params['car_list'] = Car::getCarList();
         $this->params['category_list'] = Category::getCategoryList();
 
+        $this->params['change_car_list'] = Yii::app()->request->getParam('car_list');
+        $this->params['change_category_list'] = Yii::app()->request->getParam('category_list');
+
         $this->render('_view', $this->params);
     }
 }
