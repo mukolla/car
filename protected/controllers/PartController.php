@@ -4,7 +4,7 @@ class PartController extends Controller
 {
     public $layout='//layouts/column_left';
 
-    public $menu = array(
+    /*public $menu = array(
         array(
             'label' => 'ddddddd',
             'url' => array('create'),
@@ -17,7 +17,7 @@ class PartController extends Controller
             'label' => 'ddddddd',
             'url' => array('create'),
         ),
-    );
+    );*/
 
 
     public function actionIndex()
