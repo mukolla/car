@@ -37,12 +37,14 @@ $('.search-form form').submit(function(){
 		'id',
 		array(
             'name' => 'category_id',
+            'type' => 'html',
+            'value' => '$data->category->name',
             'filter' => CHtml::listData(Category::getCategoryList(), 'id', 'name'),
         ),
 		'name',
 		'description',
 		'text',
-		'image',
+		//'image',
 		/*
 		'price',
 		'is_active',
