@@ -15,7 +15,7 @@
 <div class="form" style="margin-left: 10px;">
 
     <?php $form=$this->beginWidget('CActiveForm', array(
-        'id'=>'car-form',
+        'id'=>'sidebar-filter',
         'action' => '/search/filter',
         'method' => 'get',
         'enableAjaxValidation'=>false,
@@ -36,7 +36,7 @@
                 margin-right: 5px;
             }
         </style>
-        <?php echo CHtml::checkBoxList('car_list', '',CHtml::listData($car_list,'id', 'name')); ?>
+        <?php echo CHtml::checkBoxList('car_list', $change_car_list, CHtml::listData($car_list,'id', 'name')); ?>
     </div>
 
 
@@ -48,7 +48,7 @@
                 margin-right: 5px;
             }
         </style>
-        <?php echo CHtml::checkBoxList('category_list', '',CHtml::listData($category_list,'id', 'name')); ?>
+        <?php echo CHtml::checkBoxList('category_list', $change_category_list, CHtml::listData($category_list,'id', 'name')); ?>
     </div>
 
     <div class="row buttons">
@@ -58,3 +58,11 @@
     <?php $this->endWidget(); ?>
 
 </div><!-- form -->
+
+<script>
+    $(document).ready(function(){
+        $('#sidebar-filter').on('change', function(){
+            $('#sidebar-filter').submit();
+        });
+    });
+</script>

@@ -84,6 +84,7 @@ class ImportPartController extends Controller
 
     protected function import($file)
     {
+        /*
         $delim=',';  		// Разделитель полей в CSV файле
         $enclosed='"';  	// Кавычки для содержимого полей
         $escaped='\\'; 	 	// Ставится перед специальными символами
@@ -103,6 +104,36 @@ class ImportPartController extends Controller
                 $ignore;
             Yii::app()->db->createCommand($q_import)->execute();
         }
+        */
+
+        $delim=',';  		// Разделитель полей в CSV файле
+        $enclosed='"';  	// Кавычки для содержимого полей
+        $escaped='\\'; 	 	// Ставится перед специальными символами
+        $lineend='\\n';
+        $dir = YiiBase::getPathOfAlias(ImportPart::FILE_IMPORT_PATH);
+        //$files = CFileHelper::findFiles($dir, array('level'=>0));
+        $files = array( $dir . DIRECTORY_SEPARATOR . $file);
+
+        $f = fopen(current($files), 'r');
+        $data = fgetcsv($f,1000, $delim, $enclosed, $escaped);
+        while(!feof($f)){
+            $data = fgetcsv($f,1000, $delim, $enclosed, $escaped);
+
+            $part = new TempImportPart();
+            $part->category_id = $data['1'];
+            $part->name = $data['2'];
+            $part->description = $data['3'];
+            $part->text = $data['4'];
+            $part->image = $data['5'];
+            $part->price = $data['6'];
+            $part->is_active = $data['7'];
+            $part->is_deleted = $data['8'];
+            $part->car_list = $data['9'];
+            $part->save();
+        }
+
+        $this->redirect(array('/admin/tempImportPart/admin'));
+
     }
 
 	/**
