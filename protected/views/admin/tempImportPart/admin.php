@@ -53,6 +53,7 @@ $('.search-form form').submit(function(){
             'name' => 'category_id',
             'type' => 'html',
             'value' => '($data->categoryName)',
+            'filter' => CHtml::listData(Category::getCategoryList(), 'id', 'name'),
         ),
 		'name',
 		'description',
