@@ -35,7 +35,10 @@ $('.search-form form').submit(function(){
 	'filter'=>$model,
 	'columns'=>array(
 		'id',
-		'category_id',
+		array(
+            'name' => 'category_id',
+            'filter' => CHtml::listData(Category::getCategoryList(), 'id', 'name'),
+        ),
 		'name',
 		'description',
 		'text',
